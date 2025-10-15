@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fixmore Mall - Kenya's Premier E-commerce</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ec4899;
+            --primary-dark: #db2777;
+            --secondary: #111827;
+            --accent: #10b981;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9fafb;
+        }
+        
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .slide-in-right {
+            animation: slideInRight 0.3s ease-out;
+        }
+        
+        @keyframes slideInRight {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+        
+        .pulse-glow {
+            animation: pulseGlow 2s infinite;
+        }
+        
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 5px rgba(236, 72, 153, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(236, 72, 153, 0.8); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-pink-500 rounded-lg flex items-center justify-center">
+                        <span class="font-bold text-white text-lg">FM</span>
+                    </div>
+                    <div>
+                        <span class="font-bold text-xl text-gray-900">Fixmore Mall</span>
+                        <p class="text-xs text-gray-500 -mt-1">Kenya's Premier E-commerce</p>
+                    </div>
+                </div>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#home" class="text-gray-700 hover:text-pink-500 font-medium transition-colors">Home</a>
+                    <a href="#products" class="text-gray-700 hover:text-pink-500 font-medium transition-colors">Products</a>
+                    <a href="#categories" class="text-gray-700 hover:text-pink-500 font-medium transition-colors">Categories</a>
+                    <a href="#services" class="text-gray-700 hover:text-pink-500 font-medium transition-colors">Services</a>
+                </div>
+
+                <!-- User Actions -->
+                <div class="flex items-center space-x-4">
+                    <!-- Search -->
+                    <div class="hidden md:block relative">
+                        <input type="text" placeholder="Search products..." 
+                               class="w-64 pl-10 pr-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent">
+                        <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                    </div>
+
+                    <!-- User Menu -->
+                    <div class="relative group">
+                        <button class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                            <i class="fas fa-user-circle text-xl text-gray-600"></i>
+                            <span class="hidden md:block text-gray-700 font-medium" id="user-name">Account</span>
+                            <i class="fas fa-chevron-down text-xs text-gray-500"></i>
+                        </button>
+                        <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                            <div id="auth-buttons">
+                                <button onclick="openAuthModal('login')" class="w-full text-left px-4 py-2 text-gray-700 hover:bg-pink-50 hover:text-pink-600 transition-colors">
+                                    <i class="fas fa-sign-in-alt mr-2"></i>Sign In
+                                </button>
+                                <button onclick="openAuthModal('register')" class="w-full text-left px-4 py-2 text-gray-700 hover:bg-pink-50 hover:text-pink-600 transition-colors">
+                                    <i class="fas fa-user-plus mr-2"></i>Register
+                                </button>
+                            </div>
+                            <div id="user-menu" class="hidden border-t border-gray-100">
+                                <a href="#profile" class="block px-4 py-2 text-gray-700 hover:bg-pink-50 hover:text-pink-600 transition-colors">
+                                    <i class="fas fa-user mr-2"></i>My Profile
+                                </a>
+                                <a href="#orders" class="block px-4 py-2 text-gray-700 hover:bg-pink-50 hover:text-pink-600 transition-colors">
+                                    <i class="fas fa-shopping-bag mr-2"></i>My Orders
+                                </a>
+                                <button onclick="logout()" class="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 transition-colors">
+                                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cart -->
+                    <button onclick="toggleCart()" class="relative p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                        <i class="fas fa-shopping-cart text-xl text-gray-600"></i>
+                        <span id="cart-badge" class="absolute -top-1 -right-1 bg-pink-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Button -->
+    <div class="md:hidden fixed bottom-4 right-4 z-40">
+        <button onclick="toggleMobileMenu()" class="w-14 h-14 bg-pink-500 text-white rounded-full shadow-lg flex items-center justify-center hover:bg-pink-600 transition-colors pulse-glow">
+            <i class="fas fa-bars text-xl"></i>
+        </button>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="fixed inset-0 bg-white z-50 transform translate-x-full transition-transform duration-300 md:hidden">
+        <div class="p-6 h-full flex flex-col">
+            <div class="flex justify-between items-center mb-8">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-pink-500 rounded-lg flex items-center justify-center">
+                        <span class="font-bold text-white text-lg">FM</span>
+                    </div>
+                    <span class="font-bold text-xl text-gray-900">Fixmore Mall</span>
+                </div>
+                <button onclick="toggleMobileMenu()" class="p-2">
+                    <i class="fas fa-times text-xl text-gray-600"></i>
+                </button>
+            </div>
+            
+            <div class="space-y-4 flex-1">
+                <a href="#home" onclick="toggleMobileMenu()" class="block py-3 text-lg font-medium text-gray-700 border-b border-gray-100">Home</a>
+                <a href="#products" onclick="toggleMobileMenu()" class="block py-3 text-lg font-medium text-gray-700 border-b border-gray-100">Products</a>
+                <a href="#categories" onclick="toggleMobileMenu()" class="block py-3 text-lg font-medium text-gray-700 border-b border-gray-100">Categories</a>
+                <a href="#services" onclick="toggleMobileMenu()" class="block py-3 text-lg font-medium text-gray-700 border-b border-gray-100">Services</a>
+            </div>
+            
+            <div class="border-t border-gray-200 pt-4">
+                <div id="mobile-auth-buttons" class="space-y-2">
+                    <button onclick="openAuthModal('login'); toggleMobileMenu();" class="w-full bg-pink-500 text-white py-3 rounded-lg font-semibold">
+                        Sign In
+                    </button>
+                    <button onclick="openAuthModal('register'); toggleMobileMenu();" class="w-full border border-pink-500 text-pink-500 py-3 rounded-lg font-semibold">
+                        Register
+                    </button>
+                </div>
+                <div id="mobile-user-menu" class="hidden space-y-2">
+                    <a href="#profile" onclick="toggleMobileMenu()" class="block py-2 text-gray-700 text-center">My Profile</a>
+                    <a href="#orders" onclick="toggleMobileMenu()" class="block py-2 text-gray-700 text-center">My Orders</a>
+                    <button onclick="logout(); toggleMobileMenu();" class="w-full text-red-600 py-2">Logout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section id="home" class="bg-gradient-to-br from-gray-900 to-gray-800 text-white py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h1 class="text-5xl md:text-7xl font-bold mb-6 fade-in">
+                    Welcome to <span class="text-pink-500">Fixmore Mall</span>
+                </h1>
+                <p class="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto fade-in">
+                    Kenya's Premier Destination for Gadgets, Tech Products, and Digital Services
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center fade-in">
+                    <button onclick="scrollToSection('products')" class="bg-pink-500 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-pink-600 transition-colors flex items-center justify-center">
+                        <span>Shop Now</span>
+                        <i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                    <button onclick="scrollToSection('services')" class="border-2 border-white text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-white hover:text-gray-900 transition-colors">
+                        Explore Services
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trust Badges -->
+    <section class="py-8 bg-white border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                <div class="flex flex-col items-center">
+                    <i class="fas fa-shipping-fast text-pink-500 text-2xl mb-2"></i>
+                    <p class="text-sm font-medium text-gray-700">Free Delivery in Nairobi</p>
+                </div>
+                <div class="flex flex-col items-center">
+                    <i class="fas fa-shield-alt text-pink-500 text-2xl mb-2"></i>
+                    <p class="text-sm font-medium text-gray-700">1-Year Warranty</p>
+                </div>
+                <div class="flex flex-col items-center">
+                    <i class="fas fa-phone-alt text-pink-500 text-2xl mb-2"></i>
+                    <p class="text-sm font-medium text-gray-700">24/7 Support</p>
+                </div>
+                <div class="flex flex-col items-center">
+                    <i class="fas fa-lock text-pink-500 text-2xl mb-2"></i>
+                    <p class="text-sm font-medium text-gray-700">Secure Payments</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section id="categories" class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-12">Shop by Category</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div class="bg-white rounded-2xl p-6 text-center hover:shadow-lg transition-all duration-300 border border-gray-200 cursor-pointer" onclick="filterProducts('Phones')">
+                    <div class="text-4xl mb-4">📱</div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Smartphones</h3>
+                    <p class="text-gray-600">Latest models</p>
+                </div>
+                <div class="bg-white rounded-2xl p-6 text-center hover:shadow-lg transition-all duration-300 border border-gray-200 cursor-pointer" onclick="filterProducts('Laptops')">
+                    <div class="text-4xl mb-4">💻</div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Laptops</h3>
+                    <p class="text-gray-600">Powerful computing</p>
+                </div>
+                <div class="bg-white rounded-2xl p-6 text-center hover:shadow-lg transition-all duration-300 border border-gray-200 cursor-pointer" onclick="filterProducts('Accessories')">
+                    <div class="text-4xl mb-4">🎧</div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Accessories</h3>
+                    <p class="text-gray-600">Gadgets & more</p>
+                </div>
+                <div class="bg-white rounded-2xl p-6 text-center hover:shadow-lg transition-all duration-300 border border-gray-200 cursor-pointer" onclick="filterProducts('Digital')">
+                    <div class="text-4xl mb-4">🛒</div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Digital Products</h3>
+                    <p class="text-gray-600">Courses & software</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Products -->
+    <section id="products" class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-800">Featured Products</h2>
+                <div class="flex space-x-2">
+                    <button onclick="filterProducts('all')" class="bg-gray-100 px-4 py-2 rounded-lg hover:bg-pink-500 hover:text-white transition-colors">All</button>
+                    <button onclick="filterProducts('new')" class="bg-gray-100 px-4 py-2 rounded-lg hover:bg-pink-500 hover:text-white transition-colors">New</button>
+                    <button onclick="filterProducts('sale')" class="bg-gray-100 px-4 py-2 rounded-lg hover:bg-pink-500 hover:text-white transition-colors">Sale</button>
+                </div>
+            </div>
+            
+            <div id="products-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Products will be loaded here -->
+            </div>
+            
+            <div class="text-center mt-12">
+                <button onclick="loadMoreProducts()" class="bg-pink-500 text-white px-8 py-3 rounded-full font-semibold hover:bg-pink-600 transition-colors">
+                    Load More Products
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-12">Our Premium Services</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white rounded-2xl p-6 border border-pink-200">
+                    <div class="text-pink-500 text-4xl mb-4"><i class="fas fa-tools"></i></div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Device Repair</h3>
+                    <p class="text-gray-600 mb-4">Professional repair services with warranty.</p>
+                    <button class="text-pink-500 font-semibold hover:underline">Learn More</button>
+                </div>
+                <div class="bg-white rounded-2xl p-6 border border-pink-200">
+                    <div class="text-pink-500 text-4xl mb-4"><i class="fas fa-headset"></i></div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Tech Support</h3>
+                    <p class="text-gray-600 mb-4">24/7 expert technical support.</p>
+                    <button class="text-pink-500 font-semibold hover:underline">Get Support</button>
+                </div>
+                <div class="bg-white rounded-2xl p-6 border border-pink-200">
+                    <div class="text-pink-500 text-4xl mb-4"><i class="fas fa-shipping-fast"></i></div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Express Delivery</h3>
+                    <p class="text-gray-600 mb-4">Same-day delivery in major cities.</p>
+                    <button class="text-pink-500 font-semibold hover:underline">Check Areas</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cart Sidebar -->
+    <div id="cart-sidebar" class="fixed right-0 top-0 h-full w-full md:w-96 bg-white shadow-2xl z-50 transform translate-x-full transition-transform duration-300 slide-in-right">
+        <div class="p-6 h-full flex flex-col">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-800">Your Cart</h2>
+                <button onclick="toggleCart()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <div id="cart-items" class="flex-1 overflow-y-auto mb-6">
+                <!-- Cart items will be loaded here -->
+            </div>
+            
+            <div class="border-t pt-4">
+                <div class="flex justify-between mb-2">
+                    <span class="text-gray-600">Subtotal</span>
+                    <span id="cart-subtotal" class="font-semibold">KSh 0.00</span>
+                </div>
+                <div class="flex justify-between mb-2">
+                    <span class="text-gray-600">Shipping</span>
+                    <span id="cart-shipping" class="font-semibold">KSh 0.00</span>
+                </div>
+                <div class="flex justify-between mb-4">
+                    <span class="text-gray-600">Tax</span>
+                    <span id="cart-tax" class="font-semibold">KSh 0.00</span>
+                </div>
+                <div class="flex justify-between text-lg font-bold border-t pt-2">
+                    <span>Total</span>
+                    <span id="cart-total" class="text-pink-500">KSh 0.00</span>
+                </div>
+            </div>
+            
+            <button onclick="openCheckout()" class="w-full bg-pink-500 text-white py-4 rounded-lg font-semibold hover:bg-pink-600 transition-colors mt-6">
+                Proceed to Checkout
+            </button>
+            
+            <button onclick="toggleCart()" class="w-full border border-gray-300 text-gray-700 py-4 rounded-lg font-semibold hover:border-pink-500 hover:text-pink-500 transition-colors mt-2">
+                Continue Shopping
+            </button>
+        </div>
+    </cart-sidebar>
+
+    <!-- Auth Modal -->
+    <div id="auth-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 hidden">
+        <div class="bg-white rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 id="auth-modal-title" class="text-2xl font-bold text-gray-800">Sign In</h2>
+                    <button onclick="closeAuthModal()" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                
+                <form id="auth-form">
+                    <div id="login-form" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                            <input type="email" id="login-email" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                            <input type="password" id="login-password" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent" required>
+                        </div>
+                        <button type="submit" class="w-full bg-pink-500 text-white py-3 rounded-lg font-semibold hover:bg-pink-600 transition-colors">
+                            <span id="login-button-text">Sign In</span>
+                        </button>
+                    </div>
+                    
+                    <div id="register-form" class="space-y-4 hidden">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                                <input type="text" id="register-first-name" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                                <input type="text" id="register-last-name" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent" required>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                            <input type="email" id="register-email" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                            <input type="tel" id="register-phone" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                            <input type="password" id="register-password" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent" required>
+                        </div>
+                        <button type="submit" class="w-full bg-pink-500 text-white py-3 rounded-lg font-semibold hover:bg-pink-600 transition-colors">
+                            <span id="register-button-text">Create Account</span>
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="mt-4 text-center">
+                    <p id="auth-switch-text" class="text-gray-600">
+                        Don't have an account? 
+                        <button onclick="switchAuthForm()" class="text-pink-500 font-semibold hover:underline">Sign up</button>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div id="checkout-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 hidden">
+        <div class="bg-white rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">Checkout</h2>
+                    <button onclick="closeCheckout()" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                
+                <div class="mb-6">
+                    <h3 class="font-semibold text-gray-800 mb-3">Payment Method</h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="selectPayment('mpesa')" class="p-4 border-2 border-green-500 rounded-lg bg-green-50 text-green-700 font-semibold">
+                            <i class="fas fa-mobile-alt mr-2"></i>M-Pesa
+                        </button>
+                        <button onclick="selectPayment('card')" class="p-4 border-2 border-gray-300 rounded-lg hover:border-pink-500 text-gray-700 font-semibold">
+                            <i class="fas fa-credit-card mr-2"></i>Card
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="mpesa-payment" class="space-y-4">
+                    <input type="tel" placeholder="2547XXXXXXXX" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent">
+                    <button onclick="processMpesaPayment()" class="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors">
+                        Pay with M-Pesa
+                    </button>
+                </div>
+                
+                <div class="border-t pt-4 mt-6">
+                    <div class="flex justify-between text-lg font-bold">
+                        <span>Total</span>
+                        <span id="checkout-total" class="text-pink-500">KSh 0.00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <div class="w-8 h-8 bg-pink-500 rounded flex items-center justify-center">
+                            <span class="font-bold text-white">FM</span>
+                        </div>
+                        <span class="font-bold text-xl">Fixmore Mall</span>
+                    </div>
+                    <p class="text-gray-400 text-sm">
+                        Kenya's premier e-commerce platform for tech products and services.
+                    </p>
+                </div>
+                <div>
+                    <h3 class="font-semibold mb-4">Quick Links</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#home" class="hover:text-white transition-colors">Home</a></li>
+                        <li><a href="#products" class="hover:text-white transition-colors">Products</a></li>
+                        <li><a href="#services" class="hover:text-white transition-colors">Services</a></li>
+                        <li><a href="#about" class="hover:text-white transition-colors">About Us</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold mb-4">Support</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#contact" class="hover:text-white transition-colors">Contact Us</a></li>
+                        <li><a href="#faq" class="hover:text-white transition-colors">FAQ</a></li>
+                        <li><a href="#shipping" class="hover:text-white transition-colors">Shipping</a></li>
+                        <li><a href="#returns" class="hover:text-white transition-colors">Returns</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold mb-4">Contact Info</h3>
+                    <div class="space-y-2 text-gray-400">
+                        <p><i class="fas fa-phone mr-2"></i>+254 700 000000</p>
+                        <p><i class="fas fa-envelope mr-2"></i>info@fixmoremall.co.ke</p>
+                        <p><i class="fas fa-map-marker-alt mr-2"></i>Nairobi, Kenya</p>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400 text-sm">
+                <p>&copy; 2024 Fixmore Mall. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // API Configuration
+        const API_BASE_URL = 'http://localhost:5000/api';
+        
+        // Application State
+        let appState = {
+            user: null,
+            cart: [],
+            products: [],
+            currentPage: 1,
+            authForm: 'login',
+            isLoading: false
+        };
+
+        // Initialize application
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+        });
+
+        async function initializeApp() {
+            // Check for existing authentication
+            const token = localStorage.getItem('authToken');
+            if (token) {
+                await verifyToken(token);
+            }
+            
+            // Load products
+            await loadProducts();
+            
+            // Load cart
+            await loadCart();
+            
+            // Update UI
+            updateUserInterface();
+        }
+
+        // Authentication Functions
+        async function verifyToken(token) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/auth/me`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    appState.user = data.user;
+                } else {
+                    localStorage.removeItem('authToken');
+                }
+            } catch (error) {
+                console.error('Token verification failed:', error);
+                localStorage.removeItem('authToken');
+            }
+        }
+
+        function openAuthModal(formType = 'login') {
+            appState.authForm = formType;
+            updateAuthModal();
+            document.getElementById('auth-modal').classList.remove('hidden');
+        }
+
+        function closeAuthModal() {
+            document.getElementById('auth-modal').classList.add('hidden');
+            document.getElementById('auth-form').reset();
+        }
+
+        function switchAuthForm() {
+            appState.authForm = appState.authForm === 'login' ? 'register' : 'login';
+            updateAuthModal();
+        }
+
+        function updateAuthModal() {
+            const loginForm = document.getElementById('login-form');
+            const registerForm = document.getElementById('register-form');
+            const authTitle = document.getElementById('auth-modal-title');
+            const switchText = document.getElementById('auth-switch-text');
+            
+            if (appState.authForm === 'login') {
+                loginForm.classList.remove('hidden');
+                registerForm.classList.add('hidden');
+                authTitle.textContent = 'Sign In';
+                switchText.innerHTML = `Don't have an account? <button onclick="switchAuthForm()" class="text-pink-500 font-semibold hover:underline">Sign up</button>`;
+            } else {
+                loginForm.classList.add('hidden');
+                registerForm.classList.remove('hidden');
+                authTitle.textContent = 'Create Account';
+                switchText.innerHTML = `Already have an account? <button onclick="switchAuthForm()" class="text-pink-500 font-semibold hover:underline">Sign in</button>`;
+            }
+        }
+
+        document.getElementById('auth-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            await handleAuthSubmit();
+        });
+
+        async function handleAuthSubmit() {
+            if (appState.authForm === 'login') {
+                await handleLogin();
+            } else {
+                await handleRegister();
+            }
+        }
+
+        async function handleLogin() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            if (!email || !password) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            setLoading('login', true);
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    localStorage.setItem('authToken', data.access_token);
+                    appState.user = data.user;
+                    closeAuthModal();
+                    updateUserInterface();
+                    showNotification('Login successful!');
+                } else {
+                    alert(data.error || 'Login failed');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                alert('Login failed. Please try again.');
+            } finally {
+                setLoading('login', false);
+            }
+        }
+
+        async function handleRegister() {
+            const firstName = document.getElementById('register-first-name').value;
+            const lastName = document.getElementById('register-last-name').value;
+            const email = document.getElementById('register-email').value;
+            const phone = document.getElementById('register-phone').value;
+            const password = document.getElementById('register-password').value;
+            
+            if (!firstName || !lastName || !email || !phone || !password) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            setLoading('register', true);
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/auth/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        first_name: firstName,
+                        last_name: lastName,
+                        email,
+                        phone,
+                        password
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    localStorage.setItem('authToken', data.access_token);
+                    appState.user = data.user;
+                    closeAuthModal();
+                    updateUserInterface();
+                    showNotification('Registration successful!');
+                } else {
+                    alert(data.error || 'Registration failed');
+                }
+            } catch (error) {
+                console.error('Registration error:', error);
+                alert('Registration failed. Please try again.');
+            } finally {
+                setLoading('register', false);
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('authToken');
+            appState.user = null;
+            updateUserInterface();
+            showNotification('Logged out successfully');
+        }
+
+        function setLoading(formType, isLoading) {
+            const button = document.getElementById(`${formType}-button-text`);
+            if (isLoading) {
+                button.innerHTML = '<div class="loading-spinner"></div>';
+            } else {
+                button.textContent = formType === 'login' ? 'Sign In' : 'Create Account';
+            }
+        }
+
+        // Product Management
+        async function loadProducts() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/products/?page=${appState.currentPage}`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    if (appState.currentPage === 1) {
+                        appState.products = data.products;
+                    } else {
+                        appState.products = [...appState.products, ...data.products];
+                    }
+                    renderProducts();
+                } else {
+                    // Fallback to sample data
+                    loadSampleProducts();
+                }
+            } catch (error) {
+                console.error('Error loading products:', error);
+                loadSampleProducts();
+            }
+        }
+
+        function loadSampleProducts() {
+            appState.products = [
+                {
+                    id: 1,
+                    name: 'Samsung Galaxy A14',
+                    description: '6.6" Display, 50MP Camera, 5000mAh Battery',
+                    price: 18999,
+                    images: ['https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400'],
+                    category: { name: 'Phones' },
+                    tags: ['Popular'],
+                    quantity: 15
+                },
+                {
+                    id: 2,
+                    name: 'Tecno Spark 10 Pro',
+                    description: '6.8" Display, 32MP Selfie, 5000mAh Battery',
+                    price: 21999,
+                    images: ['https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=400'],
+                    category: { name: 'Phones' },
+                    tags: ['New'],
+                    quantity: 12
+                },
+                {
+                    id: 3,
+                    name: 'Infinix Hot 30i',
+                    description: '6.6" Display, 50MP AI Camera, 5000mAh',
+                    price: 15999,
+                    images: ['https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=400'],
+                    category: { name: 'Phones' },
+                    tags: ['Budget'],
+                    quantity: 20
+                },
+                {
+                    id: 4,
+                    name: 'HP 15s Laptop',
+                    description: 'Intel Core i3, 8GB RAM, 256GB SSD',
+                    price: 54999,
+                    images: ['https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400'],
+                    category: { name: 'Laptops' },
+                    tags: ['Popular'],
+                    quantity: 8
+                }
+            ];
+            renderProducts();
+        }
+
+        function renderProducts() {
+            const container = document.getElementById('products-container');
+            container.innerHTML = '';
+            
+            appState.products.forEach(product => {
+                const productElement = document.createElement('div');
+                productElement.className = 'bg-white rounded-2xl shadow-lg overflow-hidden group hover:shadow-xl transition-all duration-300';
+                productElement.innerHTML = `
+                    <div class="relative overflow-hidden">
+                        <img src="${product.images[0]}" alt="${product.name}" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
+                        <div class="absolute top-2 left-2">
+                            ${product.tags.map(tag => `<span class="bg-pink-500 text-white px-2 py-1 rounded-full text-xs font-semibold mr-1">${tag}</span>`).join('')}
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-semibold text-gray-800 mb-1">${product.name}</h3>
+                        <p class="text-gray-600 text-sm mb-2">${product.description}</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-2xl font-bold text-pink-500">KSh ${product.price.toLocaleString()}</span>
+                            <button onclick="addToCart(${product.id})" class="bg-gray-900 text-white px-4 py-2 rounded-full hover:bg-pink-500 transition-colors text-sm font-semibold">
+                                <i class="fas fa-cart-plus mr-2"></i>Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(productElement);
+            });
+        }
+
+        function filterProducts(category) {
+            // In a real app, this would filter products from the API
+            loadProducts();
+        }
+
+        function loadMoreProducts() {
+            appState.currentPage++;
+            loadProducts();
+        }
+
+        // Cart Functions
+        async function loadCart() {
+            if (!appState.user) {
+                // Load from localStorage for guests
+                const savedCart = localStorage.getItem('guestCart');
+                if (savedCart) {
+                    appState.cart = JSON.parse(savedCart);
+                }
+                updateCartUI();
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/cart/`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    appState.cart = data.items || [];
+                    updateCartUI();
+                }
+            } catch (error) {
+                console.error('Error loading cart:', error);
+            }
+        }
+
+        async function addToCart(productId) {
+            const product = appState.products.find(p => p.id === productId);
+            
+            if (!product) return;
+            
+            const existingItem = appState.cart.find(item => item.product_id === productId);
+            
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                appState.cart.push({
+                    product_id: productId,
+                    product_name: product.name,
+                    product_image: product.images[0],
+                    price: product.price,
+                    quantity: 1
+                });
+            }
+            
+            if (appState.user) {
+                // Sync with backend
+                await syncCartWithBackend();
+            } else {
+                // Save to localStorage for guests
+                localStorage.setItem('guestCart', JSON.stringify(appState.cart));
+            }
+            
+            updateCartUI();
+            showNotification(`${product.name} added to cart!`);
+        }
+
+        async function syncCartWithBackend() {
+            try {
+                for (const item of appState.cart) {
+                    await fetch(`${API_BASE_URL}/cart/`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                        },
+                        body: JSON.stringify({
+                            product_id: item.product_id,
+                            quantity: item.quantity
+                        })
+                    });
+                }
+            } catch (error) {
+                console.error('Error syncing cart:', error);
+            }
+        }
+
+        function updateCartUI() {
+            const badge = document.getElementById('cart-badge');
+            const totalItems = appState.cart.reduce((sum, item) => sum + item.quantity, 0);
+            
+            if (totalItems > 0) {
+                badge.textContent = totalItems;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+            
+            // Update cart sidebar
+            const cartItemsContainer = document.getElementById('cart-items');
+            const subtotalElement = document.getElementById('cart-subtotal');
+            const totalElement = document.getElementById('cart-total');
+            
+            if (appState.cart.length === 0) {
+                cartItemsContainer.innerHTML = '<p class="text-gray-500 text-center py-8">Your cart is empty</p>';
+                subtotalElement.textContent = 'KSh 0.00';
+                totalElement.textContent = 'KSh 0.00';
+                return;
+            }
+            
+            let subtotal = 0;
+            cartItemsContainer.innerHTML = '';
+            
+            appState.cart.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                subtotal += itemTotal;
+                
+                const cartItem = document.createElement('div');
+                cartItem.className = 'flex items-center space-x-4 py-4 border-b border-gray-200';
+                cartItem.innerHTML = `
+                    <img src="${item.product_image}" alt="${item.product_name}" class="w-16 h-16 object-cover rounded-lg">
+                    <div class="flex-1">
+                        <h3 class="font-semibold text-gray-800">${item.product_name}</h3>
+                        <p class="text-pink-500 font-bold">KSh ${item.price.toLocaleString()}</p>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button onclick="updateCartQuantity(${item.product_id}, ${item.quantity - 1})" class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center hover:bg-gray-300">-</button>
+                        <span class="w-8 text-center font-semibold">${item.quantity}</span>
+                        <button onclick="updateCartQuantity(${item.product_id}, ${item.quantity + 1})" class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center hover:bg-gray-300">+</button>
+                    </div>
+                    <button onclick="removeFromCart(${item.product_id})" class="text-red-500 hover:text-red-700">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                `;
+                cartItemsContainer.appendChild(cartItem);
+            });
+            
+            const shipping = subtotal > 5000 ? 0 : 300;
+            const tax = subtotal * 0.16;
+            const total = subtotal + shipping + tax;
+            
+            subtotalElement.textContent = `KSh ${subtotal.toLocaleString()}`;
+            document.getElementById('cart-shipping').textContent = `KSh ${shipping.toLocaleString()}`;
+            document.getElementById('cart-tax').textContent = `KSh ${tax.toLocaleString()}`;
+            totalElement.textContent = `KSh ${total.toLocaleString()}`;
+        }
+
+        async function updateCartQuantity(productId, newQuantity) {
+            if (newQuantity <= 0) {
+                removeFromCart(productId);
+                return;
+            }
+            
+            const item = appState.cart.find(item => item.product_id === productId);
+            if (item) {
+                item.quantity = newQuantity;
+            }
+            
+            if (appState.user) {
+                await syncCartWithBackend();
+            } else {
+                localStorage.setItem('guestCart', JSON.stringify(appState.cart));
+            }
+            
+            updateCartUI();
+        }
+
+        async function removeFromCart(productId) {
+            appState.cart = appState.cart.filter(item => item.product_id !== productId);
+            
+            if (appState.user) {
+                await fetch(`${API_BASE_URL}/cart/${productId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    }
+                });
+            } else {
+                localStorage.setItem('guestCart', JSON.stringify(appState.cart));
+            }
+            
+            updateCartUI();
+            showNotification('Item removed from cart');
+        }
+
+        function toggleCart() {
+            const cartSidebar = document.getElementById('cart-sidebar');
+            cartSidebar.classList.toggle('translate-x-full');
+        }
+
+        function openCheckout() {
+            if (appState.cart.length === 0) {
+                showNotification('Your cart is empty');
+                return;
+            }
+            
+            if (!appState.user) {
+                showNotification('Please sign in to checkout');
+                openAuthModal('login');
+                return;
+            }
+            
+            const totalElement = document.getElementById('checkout-total');
+            const cartTotal = document.getElementById('cart-total').textContent;
+            totalElement.textContent = cartTotal;
+            
+            document.getElementById('checkout-modal').classList.remove('hidden');
+        }
+
+        function closeCheckout() {
+            document.getElementById('checkout-modal').classList.add('hidden');
+        }
+
+        function selectPayment(method) {
+            // Handle payment method selection
+            console.log('Selected payment method:', method);
+        }
+
+        async function processMpesaPayment() {
+            showNotification('Initiating M-Pesa payment...');
+            // In a real app, this would call the backend to initiate M-Pesa payment
+            setTimeout(() => {
+                showNotification('Payment successful! Order confirmed.');
+                closeCheckout();
+                toggleCart();
+                appState.cart = [];
+                updateCartUI();
+            }, 3000);
+        }
+
+        // UI Functions
+        function updateUserInterface() {
+            const authButtons = document.getElementById('auth-buttons');
+            const userMenu = document.getElementById('user-menu');
+            const mobileAuthButtons = document.getElementById('mobile-auth-buttons');
+            const mobileUserMenu = document.getElementById('mobile-user-menu');
+            const userName = document.getElementById('user-name');
+            
+            if (appState.user) {
+                authButtons.classList.add('hidden');
+                userMenu.classList.remove('hidden');
+                mobileAuthButtons.classList.add('hidden');
+                mobileUserMenu.classList.remove('hidden');
+                userName.textContent = appState.user.first_name;
+            } else {
+                authButtons.classList.remove('hidden');
+                userMenu.classList.add('hidden');
+                mobileAuthButtons.classList.remove('hidden');
+                mobileUserMenu.classList.add('hidden');
+                userName.textContent = 'Account';
+            }
+        }
+
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('translate-x-full');
+        }
+
+        function scrollToSection(sectionId) {
+            document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function showNotification(message) {
+            // Simple notification - in a real app, use a proper notification system
+            alert(message);
+        }
+    </script>
+</body>
+</html>

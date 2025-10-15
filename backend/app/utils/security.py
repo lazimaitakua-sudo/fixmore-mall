@@ -10,6 +10,32 @@ def hash_password(password):
 def verify_password(password_hash, password):
     return check_password_hash(password_hash, password)
 
+def validate_password_strength(password):
+    """
+    Validate password strength
+    - At least 8 characters
+    - At least one uppercase letter
+    - At least one lowercase letter  
+    - At least one number
+    - At least one special character
+    """
+    if len(password) < 8:
+        return False, "Password must be at least 8 characters long"
+    
+    if not any(c.isupper() for c in password):
+        return False, "Password must contain at least one uppercase letter"
+    
+    if not any(c.islower() for c in password):
+        return False, "Password must contain at least one lowercase letter"
+    
+    if not any(c.isdigit() for c in password):
+        return False, "Password must contain at least one number"
+    
+    if not any(c in '!@#$%^&*()_+-=[]{}|;:,.<>?`~' for c in password):
+        return False, "Password must contain at least one special character"
+    
+    return True, "Password is strong"
+
 def generate_tokens(identity, additional_claims=None):
     access_token = create_access_token(identity=identity, additional_claims=additional_claims)
     refresh_token = create_refresh_token(identity=identity)

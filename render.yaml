@@ -2,45 +2,20 @@ services:
   - type: web
     name: fixmore-mall-backend
     env: python
-    plan: free
     rootDir: backend
-    buildCommand: |
-      pip install -r requirements.txt
-      python -c "
-from app import create_app, db;
-from app.models import User;
-from app.utils.security import hash_password;
-app = create_app();
-with app.app_context():
-    db.create_all();
-    if not User.query.filter_by(email='admin@fixmore.com').first():
-        admin = User(
-            email='jogoonets.com',
-            password_hash=hash_password('admin123'),
-            first_name='Admin',
-            last_name='User',
-            phone='254700000000',
-            is_admin=True
-        );
-        db.session.add(admin);
-        db.session.commit();
-        print('Admin user created');
-"
-    startCommand: gunicorn --bind 0.0.0.0:$PORT --workers 4 --threads 8 --timeout 300 run:app
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --bind 0.0.0.0:$PORT run:app
     envVars:
       - key: FLASK_CONFIG
         value: production
-      - key: SECRET_KEY
-        generateValue: true
-      - key: JWT_SECRET_KEY
-        generateValue: true
       - key: DATABASE_URL
         fromDatabase:
           name: fixmore-mall-db
           property: connectionString
 
-databases:
-  - name: fixmore-mall-db
-    plan: free
-    databaseName: fixmore_mall
-    user: fixmore
+  - type: web
+    name: fixmore-mall-frontend
+    env: node
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    startCommand: npm run start

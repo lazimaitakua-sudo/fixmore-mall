@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
@@ -9,8 +9,6 @@ from flask_limiter.util import get_remote_address
 import os
 from dotenv import load_dotenv
 import logging
-from logging.handlers import RotatingFileHandler
-import redis
 
 load_dotenv()
 
@@ -20,7 +18,6 @@ jwt = JWTManager()
 cors = CORS()
 mail = Mail()
 limiter = Limiter(key_func=get_remote_address)
-redis_client = redis.Redis.from_url(os.environ.get('REDIS_URL', 'redis://localhost:6379/0'))
 
 def create_app(config_name=None):
     app = Flask(__name__)
@@ -58,6 +55,15 @@ def create_app(config_name=None):
     app.register_blueprint(payments_bp, url_prefix='/api/payments')
     app.register_blueprint(admin_bp, url_prefix='/api/admin')
     
+    # Serve frontend static files in production
+    @app.route('/', defaults={'path': ''})
+    @app.route('/<path:path>')
+    def serve_frontend(path):
+        if path != "" and os.path.exists(os.path.join('../frontend', path)):
+            return send_from_directory('../frontend', path)
+        else:
+            return send_from_directory('../frontend', 'index.html')
+    
     # Error handlers
     @app.errorhandler(404)
     def not_found(error):
@@ -72,42 +78,23 @@ def create_app(config_name=None):
         app.logger.error(f'Server Error: {error}')
         return jsonify({'error': 'Internal server error'}), 500
     
-    # Health check with database connectivity test
+    # Health check
     @app.route('/health')
     def health_check():
         try:
-            # Test database connection
             db.session.execute('SELECT 1')
             db_status = 'connected'
         except Exception as e:
             db_status = f'error: {str(e)}'
         
-        try:
-            # Test Redis connection
-            redis_client.ping()
-            redis_status = 'connected'
-        except Exception as e:
-            redis_status = f'error: {str(e)}'
-        
         return jsonify({
             'status': 'healthy',
             'service': 'fixmore-backend',
-            'database': db_status,
-            'redis': redis_status
+            'database': db_status
         })
     
     return app
 
 def setup_logging(app):
     if not app.debug:
-        # Production logging
-        if not os.path.exists('logs'):
-            os.mkdir('logs')
-        file_handler = RotatingFileHandler('logs/fixmore.log', maxBytes=10240, backupCount=10)
-        file_handler.setFormatter(logging.Formatter(
-            '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
-        ))
-        file_handler.setLevel(logging.INFO)
-        app.logger.addHandler(file_handler)
-        app.logger.setLevel(logging.INFO)
-        app.logger.info('Fixmore Mall startup')
+        logging.basicConfig(level=logging.INFO)

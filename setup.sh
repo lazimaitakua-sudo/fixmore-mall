@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "Setting up Fixmore Mall..."
+echo "Setting up Fixmore Mall for Render deployment..."
 
 # Check if Python is installed
 if ! command -v python3 &> /dev/null; then
@@ -23,8 +23,10 @@ pip install -r requirements.txt
 
 # Set up environment variables
 echo "Setting up environment variables..."
-cp .env.example .env
-echo "Please update backend/.env with your actual configuration values"
+if [ ! -f .env ]; then
+    cp .env.example .env
+    echo "Please update backend/.env with your actual configuration values"
+fi
 
 # Initialize database
 echo "Initializing database..."
@@ -52,7 +54,7 @@ with app.app_context():
         )
         db.session.add(admin)
         db.session.commit()
-        print('Admin user created: admin@fixmore.com / admin123')
+        print('Admin user created: jogoonets@gmail.com / admin123')
     else:
         print('Admin user already exists')
 "

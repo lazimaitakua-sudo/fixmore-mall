@@ -13,15 +13,17 @@ migrate = Migrate()
 
 
 def create_app():
-    # Serve frontend from 'frontend' folder
-    app = Flask(__name__, static_folder='frontend', static_url_path='/')
+    # Resolve frontend folder relative to this file
+    frontend_folder = os.path.join(os.path.dirname(__file__), '../frontend')
 
-    # Minimal configurations
+    app = Flask(__name__, static_folder=frontend_folder, static_url_path='/')
+
+    # --- Minimal configurations ---
     app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///db.sqlite3')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'super-secret-key')
 
-    # Initialize extensions
+    # --- Initialize extensions ---
     db.init_app(app)
     jwt.init_app(app)
     migrate.init_app(app, db)
@@ -30,31 +32,26 @@ def create_app():
     # --- Favicon route ---
     @app.route('/favicon.ico')
     def favicon():
-        # Serve favicon directly from frontend folder
-        return send_from_directory(app.static_folder, 'favicon.ico')
+        return send_from_directory(frontend_folder, 'favicon.ico')
 
     # --- SPA route ---
     @app.route('/', defaults={'path': ''})
     @app.route('/<path:path>')
     def serve_frontend(path):
-        """
-        Serve SPA frontend.
-        - If a file exists in frontend folder, serve it.
-        - Otherwise, always serve index.html (SPA entry point).
-        """
-        # Protect favicon route from being handled here
+        # Protect favicon route
         if path == 'favicon.ico':
             return favicon()
 
-        frontend_folder = app.static_folder
-        file_path = os.path.join(frontend_folder, path)
-        index_path = os.path.join(frontend_folder, 'index.html')
+        requested_file = os.path.join(frontend_folder, path)
+        index_file = os.path.join(frontend_folder, 'index.html')
 
-        if os.path.exists(file_path) and not os.path.isdir(file_path):
+        # Serve file if it exists, else fallback to index.html
+        if os.path.exists(requested_file) and not os.path.isdir(requested_file):
             return send_from_directory(frontend_folder, path)
-        elif os.path.exists(index_path):
+        elif os.path.exists(index_file):
             return send_from_directory(frontend_folder, 'index.html')
         else:
+            # No frontend found, show API running message
             return jsonify({"message": "Fixmore Mall API is running ✅"}), 200
 
     # --- Health check ---

@@ -1,0 +1,36 @@
+services:
+  - type: web
+    name: fixmore-mall-backend
+    env: python
+    plan: free
+    buildCommand: |
+      pip install -r requirements.txt
+      python -m flask db upgrade
+    startCommand: |
+      gunicorn --config gunicorn.conf.py "run:app"
+    envVars:
+      - key: FLASK_CONFIG
+        value: production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: fixmore-mall-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: fixmore-mall-redis
+          property: connectionString
+
+databases:
+  - name: fixmore-mall-db
+    plan: free
+    databaseName: fixmore_mall
+    user: fixmore
+
+redis:
+  - name: fixmore-mall-redis
+    plan: free

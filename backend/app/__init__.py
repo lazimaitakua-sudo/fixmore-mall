@@ -27,26 +27,25 @@ def create_app():
     migrate.init_app(app, db)
     CORS(app)
 
-    # --- Serve favicon explicitly ---
+    # --- Favicon Route ---
     @app.route('/favicon.ico')
     def favicon():
         return send_from_directory(app.static_folder, 'favicon.ico')
 
-    # --- Serve HTML / SPA ---
-    if not any(rule.endpoint == 'serve_frontend' for rule in app.url_map.iter_rules()):
-        @app.route('/', defaults={'path': ''})
-        @app.route('/<path:path>')
-        def serve_frontend(path):
-            frontend_folder = app.static_folder
-            file_path = os.path.join(frontend_folder, path)
-            index_path = os.path.join(frontend_folder, 'index.html')
+    # --- Serve HTML for frontend SPA ---
+    @app.route('/', defaults={'path': ''})
+    @app.route('/<path:path>')
+    def serve_frontend(path):
+        frontend_folder = app.static_folder
+        file_path = os.path.join(frontend_folder, path)
+        index_path = os.path.join(frontend_folder, 'index.html')
 
-            if os.path.exists(file_path) and not os.path.isdir(file_path):
-                return send_from_directory(frontend_folder, path)
-            elif os.path.exists(index_path):
-                return send_from_directory(frontend_folder, 'index.html')
-            else:
-                return jsonify({"message": "Fixmore Mall API is running ✅"}), 200
+        if os.path.exists(file_path) and not os.path.isdir(file_path):
+            return send_from_directory(frontend_folder, path)
+        elif os.path.exists(index_path):
+            return send_from_directory(frontend_folder, 'index.html')
+        else:
+            return jsonify({"message": "Fixmore Mall API is running ✅"}), 200
 
     # --- Health check ---
     @app.route('/health')

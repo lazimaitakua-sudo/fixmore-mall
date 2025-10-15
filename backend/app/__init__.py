@@ -27,15 +27,25 @@ def create_app():
     migrate.init_app(app, db)
     CORS(app)
 
-    # --- Favicon Route ---
+    # --- Favicon route ---
     @app.route('/favicon.ico')
     def favicon():
+        # Serve favicon directly from frontend folder
         return send_from_directory(app.static_folder, 'favicon.ico')
 
-    # --- Serve HTML for frontend SPA ---
+    # --- SPA route ---
     @app.route('/', defaults={'path': ''})
     @app.route('/<path:path>')
     def serve_frontend(path):
+        """
+        Serve SPA frontend.
+        - If a file exists in frontend folder, serve it.
+        - Otherwise, always serve index.html (SPA entry point).
+        """
+        # Protect favicon route from being handled here
+        if path == 'favicon.ico':
+            return favicon()
+
         frontend_folder = app.static_folder
         file_path = os.path.join(frontend_folder, path)
         index_path = os.path.join(frontend_folder, 'index.html')

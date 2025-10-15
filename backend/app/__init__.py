@@ -47,6 +47,7 @@ def create_app(config_name=None):
     from app.routes.orders import orders_bp
     from app.routes.payments import payments_bp
     from app.routes.admin import admin_bp
+    from app.routes.reviews import reviews_bp
     
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
     app.register_blueprint(products_bp, url_prefix='/api/products')
@@ -54,6 +55,7 @@ def create_app(config_name=None):
     app.register_blueprint(orders_bp, url_prefix='/api/orders')
     app.register_blueprint(payments_bp, url_prefix='/api/payments')
     app.register_blueprint(admin_bp, url_prefix='/api/admin')
+    app.register_blueprint(reviews_bp, url_prefix='/api/reviews')
     
     # Serve frontend static files in production
     @app.route('/', defaults={'path': ''})
